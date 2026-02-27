@@ -37,8 +37,8 @@
 #define HISTORY_INITIAL_INTERVAL 5
 
 // --- Graph ---
-#define GRAPH_TOP    10
-#define GRAPH_BOTTOM 56
+#define GRAPH_TOP    8
+#define GRAPH_BOTTOM 55
 #define GRAPH_HEIGHT (GRAPH_BOTTOM - GRAPH_TOP)
 #define GRAPH_MIN_RANGE 100
 
@@ -297,33 +297,40 @@ static void draw_page_graph(Canvas* canvas, MHZ19App* app) {
     if(y_min < 0) y_min = 0;
     range = y_max - y_min;
 
-    // Header: time span
-    uint32_t total_seconds = h->count * h->sample_interval;
-    if(total_seconds < 3600) {
-        furi_string_printf(strbuf, "CO2 History (%lum)", total_seconds / 60);
-    } else {
-        furi_string_printf(
-            strbuf, "CO2 History (%lu.%luh)", total_seconds / 3600, (total_seconds % 3600) / 360);
-    }
+    // --- Corner labels ---
     canvas_set_font(canvas, FontSecondary);
+
+    int32_t data_min = y_min + padding;
+    int32_t data_max = y_max - padding;
+
+    // Top-left: max
+    furi_string_printf(strbuf, "max:%ld", data_max);
     canvas_draw_str(canvas, 0, 7, furi_string_get_cstr(strbuf));
 
-    // Draw threshold lines (dashed)
-    for(int32_t threshold = 800; threshold <= 1000; threshold += 200) {
-        if(threshold > y_min && threshold < y_max) {
-            int32_t ty =
-                GRAPH_BOTTOM - (int32_t)((int64_t)(threshold - y_min) * GRAPH_HEIGHT / range);
-            for(int x = 0; x < 128; x += 4) {
-                canvas_draw_dot(canvas, x, ty);
-            }
-            furi_string_printf(strbuf, "%ld", threshold);
-            canvas_draw_str(canvas, 0, ty - 1, furi_string_get_cstr(strbuf));
-        }
-    }
+    // Top-right: now
+    furi_string_printf(strbuf, "now:%ld", app->co2_ppm);
+    canvas_draw_str_aligned(canvas, 127, 7, AlignRight, AlignBottom, furi_string_get_cstr(strbuf));
 
-    // Draw graph line
-    int32_t x_step_num = 127; // numerator for x scaling
-    int32_t x_step_den = h->count - 1; // denominator
+    // Bottom-left: min
+    furi_string_printf(strbuf, "min:%ld", data_min);
+    canvas_draw_str(canvas, 0, 62, furi_string_get_cstr(strbuf));
+
+    // Bottom-center: time span
+    uint32_t total_seconds = h->count * h->sample_interval;
+    if(total_seconds < 3600) {
+        furi_string_printf(strbuf, "%lum", total_seconds / 60);
+    } else {
+        furi_string_printf(strbuf, "%luh", total_seconds / 3600);
+    }
+    canvas_draw_str_aligned(canvas, 64, 62, AlignCenter, AlignBottom, furi_string_get_cstr(strbuf));
+
+    // Bottom-right: offset
+    furi_string_printf(strbuf, "%+ld", app->ppm_offset);
+    canvas_draw_str_aligned(canvas, 127, 62, AlignRight, AlignBottom, furi_string_get_cstr(strbuf));
+
+    // --- Graph line (no threshold lines) ---
+    int32_t x_step_num = 127;
+    int32_t x_step_den = h->count - 1;
 
     for(uint16_t i = 0; i < h->count - 1; i++) {
         int32_t x1 = (int32_t)((int64_t)i * x_step_num / x_step_den);
@@ -333,7 +340,6 @@ static void draw_page_graph(Canvas* canvas, MHZ19App* app) {
         int32_t y2 =
             GRAPH_BOTTOM - (int32_t)((int64_t)(h->data[i + 1] - y_min) * GRAPH_HEIGHT / range);
 
-        // Clamp
         if(y1 < GRAPH_TOP) y1 = GRAPH_TOP;
         if(y1 > GRAPH_BOTTOM) y1 = GRAPH_BOTTOM;
         if(y2 < GRAPH_TOP) y2 = GRAPH_TOP;
@@ -341,10 +347,6 @@ static void draw_page_graph(Canvas* canvas, MHZ19App* app) {
 
         canvas_draw_line(canvas, x1, y1, x2, y2);
     }
-
-    // Bottom: min/max
-    furi_string_printf(strbuf, "min:%ld max:%ld now:%ld", y_min + padding, y_max - padding, app->co2_ppm);
-    canvas_draw_str(canvas, 0, 64, furi_string_get_cstr(strbuf));
 
     furi_string_free(strbuf);
 }
