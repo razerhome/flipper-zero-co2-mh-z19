@@ -12,9 +12,7 @@ Forked from [meshchaninov/flipper-zero-mh-z19](https://github.com/meshchaninov/f
 
 ## What's changed from the original
 
-The original [meshchaninov/flipper-zero-mh-z19](https://github.com/meshchaninov/flipper-zero-mh-z19) had unstable readings that jumped erratically, a single measurement screen, and range switching (2000/5000) that most users don't need.
-
-This fork is a complete rewrite of the core logic:
+Built on top of [meshchaninov/flipper-zero-mh-z19](https://github.com/meshchaninov/flipper-zero-mh-z19) with added signal filtering, calibration, history graph, and multi-screen navigation:
 
 | | Original | This fork |
 |---|---|---|
