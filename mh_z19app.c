@@ -307,6 +307,10 @@ static void draw_page_graph(Canvas* canvas, MHZ19App* app) {
     furi_string_printf(strbuf, "max:%ld", data_max);
     canvas_draw_str(canvas, 0, 7, furi_string_get_cstr(strbuf));
 
+    // Top-center: battery
+    furi_string_printf(strbuf, "%d%%", furi_hal_power_get_pct());
+    canvas_draw_str_aligned(canvas, 64, 7, AlignCenter, AlignBottom, furi_string_get_cstr(strbuf));
+
     // Top-right: now
     furi_string_printf(strbuf, "now:%ld", app->co2_ppm);
     canvas_draw_str_aligned(canvas, 127, 7, AlignRight, AlignBottom, furi_string_get_cstr(strbuf));
