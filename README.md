@@ -7,6 +7,22 @@ Forked from [meshchaninov/flipper-zero-mh-z19](https://github.com/meshchaninov/f
 ![Ok ppm](assets/Ok.png)
 ![Very bad ppm](assets/Very.png)
 
+## What's changed from the original
+
+The original [meshchaninov/flipper-zero-mh-z19](https://github.com/meshchaninov/flipper-zero-mh-z19) had unstable readings that jumped erratically, a single measurement screen, and range switching (2000/5000) that most users don't need.
+
+This fork is a complete rewrite of the core logic:
+
+| | Original | This fork |
+|---|---|---|
+| Readings | Raw PWM, jumping ±50 ppm | 4-stage filter (median + EMA), stable ±1-2 ppm |
+| GPIO polling | ~100 ms (caused value freezing) | 1 ms (accurate PWM capture) |
+| Screens | 1 measurement screen | 5 screens: connect, calibrate, measure, debug, graph |
+| Calibration | None | Adjustable offset ±500 ppm |
+| History | None | 128-point graph with auto-compression (10 min — 11 hours) |
+| Range | Switchable 2000/5000 | Hardcoded 5000 (matches most MH-Z19 sensors) |
+| Alerts | Basic LED | LED + vibro with hysteresis to prevent flickering |
+
 ## Features
 
 - **Stable readings** — 4-stage filter pipeline: validation, median (8 samples), EMA smoothing, status hysteresis
