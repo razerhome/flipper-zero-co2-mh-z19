@@ -1,5 +1,5 @@
 App(
-    appid="mh_z19",
+    appid="co2_detector_mh_z19",
     name="CO2 detector MH-Z19",
     apptype=FlipperAppType.EXTERNAL,
     entry_point="mh_z19_app",

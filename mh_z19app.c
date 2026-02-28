@@ -1,5 +1,5 @@
 
-#include "mh_z19_icons.h"
+#include "co2_detector_mh_z19_icons.h"
 
 #include <furi.h>
 #include <furi_hal.h>
