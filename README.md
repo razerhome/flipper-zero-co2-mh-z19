@@ -59,8 +59,8 @@ PWM     ──►  A6  (pin 3)
 
 ### Option 1: Download .fap (recommended)
 
-1. Download `mh_z19.fap` from [Releases](../../releases)
-2. Copy to Flipper Zero SD card: `apps/GPIO/mh_z19.fap`
+1. Download `co2_detector_mh_z19.fap` from [Releases](../../releases)
+2. Copy to Flipper Zero SD card: `apps/GPIO/co2_detector_mh_z19.fap`
 3. Open: Applications → GPIO → CO2 detector MH-Z19
 
 ### Option 2: Build from source
@@ -73,15 +73,15 @@ git clone https://github.com/razerhome/flipper-zero-co2-mh-z19.git
 git clone --recursive https://github.com/flipperdevices/flipperzero-firmware.git
 
 # Copy app to firmware
-mkdir -p flipperzero-firmware/applications_user/mh_z19
-cp flipper-zero-co2-mh-z19/* flipperzero-firmware/applications_user/mh_z19/
+mkdir -p flipperzero-firmware/applications_user/co2_detector_mh_z19
+cp flipper-zero-co2-mh-z19/* flipperzero-firmware/applications_user/co2_detector_mh_z19/
 
 # Build
 cd flipperzero-firmware
-./fbt fap_mh_z19
+./fbt fap_co2_detector_mh_z19
 ```
 
-The compiled `.fap` will be in `build/f7-firmware-D/.extapps/mh_z19.fap`.
+The compiled `.fap` will be in `build/f7-firmware-D/.extapps/co2_detector_mh_z19.fap`.
 
 ## How the graph works
 

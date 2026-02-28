@@ -1,4 +1,4 @@
-## v2.0:
+## v1.1:
 - Stable readings: 4-stage filter (validation, median, EMA, hysteresis)
 - Fast 1 ms GPIO polling for accurate PWM measurement
 - Calibration offset screen (adjustable ±500 ppm)
