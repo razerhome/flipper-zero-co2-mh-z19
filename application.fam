@@ -6,7 +6,10 @@ App(
     requires=["gui"],
     stack_size=1024,
     order=20,
+    fap_version=(2, 0),
     fap_icon="co2_icon_10x10.png",
     fap_category="GPIO",
     fap_icon_assets="media",
+    fap_author="razerhome",
+    fap_description="CO2 detector with MH-Z19 sensor via PWM. Stable readings, history graph, calibration offset.",
 )
