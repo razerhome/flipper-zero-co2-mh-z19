@@ -263,7 +263,8 @@ static void draw_page_graph(Canvas* canvas, MHZ19App* app) {
 
     if(h->count < 2) {
         canvas_set_font(canvas, FontPrimary);
-        canvas_draw_str_aligned(canvas, 64, 32, AlignCenter, AlignCenter, "Collecting data...");
+        canvas_draw_str_aligned(canvas, 64, 28, AlignCenter, AlignCenter, "Collecting data...");
+        canvas_draw_str_aligned(canvas, 64, 40, AlignCenter, AlignCenter, "Please wait 10 sec");
         furi_string_free(strbuf);
         return;
     }
@@ -627,7 +628,10 @@ int32_t mh_z19_app(void* p) {
                 int32_t adjusted = app->filter.display_ppm + app->ppm_offset;
                 if(adjusted < 0) adjusted = 0;
                 app->co2_ppm = adjusted;
-                history_push(&app->history, app->co2_ppm);
+                // Only record to history after filter warmup (8 readings)
+                if(app->filter.count >= PPM_BUFFER_SIZE) {
+                    history_push(&app->history, app->co2_ppm);
+                }
                 furi_mutex_release(app->mutex);
             }
             furi_delay_ms(1);
