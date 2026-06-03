@@ -57,13 +57,13 @@ PWM     ──►  A6  (pin 3)
 
 ## Installation
 
-### Option 1: Download .fap (recommended)
+## Option 1: Download .fap (recommended)
 
 1. Download `co2_detector_mh_z19.fap` from [Releases](../../releases)
 2. Copy to Flipper Zero SD card: `apps/GPIO/co2_detector_mh_z19.fap`
 3. Open: Applications → GPIO → CO2 detector MH-Z19
 
-### Option 2: Build from source
+## Option 2: Build from source
 
 ```bash
 # Clone this repo
