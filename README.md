@@ -4,6 +4,8 @@ Flipper Zero application for measuring CO2 concentration using the MH-Z19 sensor
 
 Forked from [meshchaninov/flipper-zero-mh-z19](https://github.com/meshchaninov/flipper-zero-mh-z19) and significantly improved.
 
+See [SCREENSHOTS.md](SCREENSHOTS.md) for app screenshots and wiring photo.
+
 ## What's changed from the original
 
 Built on top of [meshchaninov/flipper-zero-mh-z19](https://github.com/meshchaninov/flipper-zero-mh-z19) with added signal filtering, calibration, history graph, and multi-screen navigation:
