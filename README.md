@@ -4,12 +4,6 @@ Flipper Zero application for measuring CO2 concentration using the MH-Z19 sensor
 
 Forked from [meshchaninov/flipper-zero-mh-z19](https://github.com/meshchaninov/flipper-zero-mh-z19) and significantly improved.
 
-![OK - 653 ppm](assets/screen_ok.png)
-![Not good - 947 ppm](assets/screen_notgood.png)
-![Very bad - 1068 ppm](assets/screen_bad.png)
-![Debug info](assets/screen_debug.png)
-![CO2 History graph](assets/screen_graph.png)
-
 ## What's changed from the original
 
 Built on top of [meshchaninov/flipper-zero-mh-z19](https://github.com/meshchaninov/flipper-zero-mh-z19) with added signal filtering, calibration, history graph, and multi-screen navigation:
@@ -52,8 +46,6 @@ MH-Z19       Flipper Zero
 GND     ──►  GND (pin 8)
 PWM     ──►  A6  (pin 3)
 ```
-
-![setup](assets/setup2.jpeg)
 
 ## Installation
 
