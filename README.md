@@ -2,97 +2,72 @@
 
 Flipper Zero application for measuring CO2 concentration using the MH-Z19 sensor via PWM.
 
-Forked from [meshchaninov/flipper-zero-mh-z19](https://github.com/meshchaninov/flipper-zero-mh-z19) and significantly improved.
+Forked from [meshchaninov/flipper-zero-mh-z19](https://github.com/meshchaninov/flipper-zero-mh-z19) and significantly improved with signal filtering, calibration, a history graph, and multi-screen navigation.
 
-See [SCREENSHOTS.md](SCREENSHOTS.md) for app screenshots and wiring photo.
-
-## What's changed from the original
-
-Built on top of [meshchaninov/flipper-zero-mh-z19](https://github.com/meshchaninov/flipper-zero-mh-z19) with added signal filtering, calibration, history graph, and multi-screen navigation:
-
-| | Original | This fork |
-|---|---|---|
-| Readings | Raw PWM, jumping ±50 ppm | 4-stage filter (median + EMA), stable ±1-2 ppm |
-| GPIO polling | ~100 ms (caused value freezing) | 1 ms (accurate PWM capture) |
-| Screens | 1 measurement screen | 5 screens: connect, calibrate, measure, debug, graph |
-| Calibration | None | Adjustable offset ±500 ppm |
-| History | None | 128-point graph with auto-compression (10 min — 11 hours) |
-| Range | Switchable 2000/5000 | Hardcoded 5000 (matches most MH-Z19 sensors) |
-| Alerts | Basic LED | LED + vibro with hysteresis to prevent flickering |
+See [SCREENSHOTS.md](SCREENSHOTS.md) for app screenshots and a wiring photo.
 
 ## Features
 
-- **Stable readings** — 4-stage filter pipeline: validation, median (8 samples), EMA smoothing, status hysteresis
+- **Stable readings** — 4-stage filter pipeline: validation, median (8 samples), EMA smoothing, and status hysteresis
 - **Fast PWM polling** — 1 ms GPIO sampling for accurate pulse width measurement
-- **Calibration offset** — adjustable offset (±500 ppm, step 5) to match a reference sensor
-- **CO2 history graph** — real-time line chart with auto-scaling time axis (10 min to 11+ hours)
+- **Calibration offset** — adjustable offset (up to plus/minus 500 ppm, step 5) to match a reference sensor
+- **CO2 history graph** — real-time line chart with auto-scaling time axis (10 minutes to over 11 hours)
 - **Debug screen** — raw PWM values, timing, and reading count
-- **LED + vibro alerts** — green/yellow/red status based on 800/1000 ppm thresholds with hysteresis
+- **LED and vibro alerts** — green, yellow, and red status based on 800 and 1000 ppm thresholds with hysteresis
+
+## What's changed from the original
+
+- **Readings** — original showed raw PWM jumping by about 50 ppm; this fork uses a 4-stage filter (median and EMA) for stable readings within 1-2 ppm
+- **GPIO polling** — original polled about every 100 ms (caused value freezing); this fork polls every 1 ms for accurate PWM capture
+- **Screens** — original had one measurement screen; this fork has five: connect, calibrate, measure, debug, and graph
+- **Calibration** — added an adjustable offset of up to plus/minus 500 ppm
+- **History** — added a 128-point graph with auto-compression (10 minutes to 11 hours)
+- **Alerts** — original had a basic LED; this fork adds LED and vibro with hysteresis to prevent flickering
 
 ## Screens
 
-| Screen | Description | Navigation |
-|--------|-------------|------------|
-| Connect | Wiring instructions | OK → next |
-| Calibrate | Adjust PPM offset with ←→ | OK → next |
-| Measure | CO2 value, status icon, offset | ↑ debug, → graph |
-| Debug | Raw PPM, Th/Tl timing, readings count | ↓ back |
-| Graph | CO2 history chart with thresholds | ← back |
+- **Connect** — wiring instructions; press OK for next
+- **Calibrate** — adjust the ppm offset with left and right; press OK for next
+- **Measure** — CO2 value, status icon, and offset; press Up for debug, Right for graph
+- **Debug** — raw ppm, Th and Tl timing, readings count; press Down to go back
+- **Graph** — CO2 history chart with thresholds; press Left to go back
 
 ## Wiring
 
-```
-MH-Z19       Flipper Zero
-───────      ────────────
-5V      ──►  5V  (pin 1)
-GND     ──►  GND (pin 8)
-PWM     ──►  A6  (pin 3)
-```
+Connect the MH-Z19 sensor to the Flipper Zero GPIO pins:
+
+- 5V to 5V (pin 1)
+- GND to GND (pin 8)
+- PWM to A6 (pin 3)
+
+See [SCREENSHOTS.md](SCREENSHOTS.md) for a wiring photo.
 
 ## Installation
 
-## Option 1: Download .fap (recommended)
+**Option 1 — Download the prebuilt app (recommended):**
 
-1. Download `co2_detector_mh_z19.fap` from [Releases](../../releases)
-2. Copy to Flipper Zero SD card: `apps/GPIO/co2_detector_mh_z19.fap`
-3. Open: Applications → GPIO → CO2 detector MH-Z19
+- Download the .fap file from the project Releases page
+- Copy it to your Flipper SD card under apps/GPIO
+- Open Applications, then GPIO, then CO2 detector MH-Z19
 
-## Option 2: Build from source
+**Option 2 — Build from source:**
 
-```bash
-# Clone this repo
-git clone https://github.com/razerhome/flipper-zero-co2-mh-z19.git
-
-# Clone Flipper Zero firmware
-git clone --recursive https://github.com/flipperdevices/flipperzero-firmware.git
-
-# Copy app to firmware
-mkdir -p flipperzero-firmware/applications_user/co2_detector_mh_z19
-cp flipper-zero-co2-mh-z19/* flipperzero-firmware/applications_user/co2_detector_mh_z19/
-
-# Build
-cd flipperzero-firmware
-./fbt fap_co2_detector_mh_z19
-```
-
-The compiled `.fap` will be in `build/f7-firmware-D/.extapps/co2_detector_mh_z19.fap`.
+Clone this repository and the Flipper Zero firmware, copy the app into the firmware applications_user folder, and build it with fbt. Full step-by-step build commands are in [docs/BUILD.md](docs/BUILD.md).
 
 ## How the graph works
 
-The graph stores 128 data points. Recording starts at 5-second intervals. When the buffer is full, it compresses by averaging pairs of points and doubling the interval. This way 128 points can cover from ~10 minutes up to 11+ hours of monitoring.
+The graph stores 128 data points. Recording starts at 5-second intervals. When the buffer is full, it compresses by averaging pairs of points and doubling the interval, so 128 points can cover from about 10 minutes up to over 11 hours of monitoring.
 
-| Interval | Buffer covers |
-|----------|--------------|
-| 5 sec | ~10 min |
-| 10 sec | ~21 min |
-| 20 sec | ~42 min |
-| 40 sec | ~1.4 hours |
-| 80 sec | ~2.8 hours |
-| 160 sec | ~5.7 hours |
-| 320 sec | ~11.4 hours |
+Approximate coverage as the interval grows:
+
+- 5 seconds per point — about 10 minutes
+- 10 seconds per point — about 21 minutes
+- 20 seconds per point — about 42 minutes
+- 40 seconds per point — about 1.4 hours
+- 80 seconds per point — about 2.8 hours
+- 160 seconds per point — about 5.7 hours
+- 320 seconds per point — about 11.4 hours
 
 ## License
 
-MIT License. See [LICENSE](LICENSE).
-
-Based on original work by [Nikita Meshchaninov](https://github.com/meshchaninov).
+MIT License. Based on original work by [Nikita Meshchaninov](https://github.com/meshchaninov).
